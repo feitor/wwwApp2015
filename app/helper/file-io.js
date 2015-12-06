@@ -33,7 +33,7 @@ window.URL = window.URL || window.webkitURL;
  */
 
 /* sending functionality */
-var currentFileDownloaded = 0;
+var currentFileDownloaded = undefined;
 var chunksPerACK = 16; /* 16k * 16 = 256k (buffer size in Chrome & seems to work 100% of the time) */
 
 

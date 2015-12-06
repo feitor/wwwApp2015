@@ -55,9 +55,17 @@ app.controller('roomController', ['$scope', '$routeParams', '$interval', '$rootS
         var liste = {};
         _.each($scope.filesDown, function (list) {
             _.each(list, function (fileDown, name) {
-                var add=true
+                var add = true
                 _.each($scope.filesUp, function (value, key) {
-                    add = add && key !== name
+                    if (key === name) {
+                        if (fileDown.downloading)
+                        {
+                            delete $scope.filesUp[key];
+                        }
+                        else {
+                            add = false;
+                        }
+                    }
                 })
                 if (add) {
                     liste[name] = fileDown;
@@ -149,7 +157,7 @@ app.controller('roomController', ['$scope', '$routeParams', '$interval', '$rootS
             for (var i = 0; i < files.length; i++) {
                 defer = $q.defer();
                 /* firefox and chrome specific I think, but clear the file input */
-                writeFiletoFS(files[i].name, files[i], defer)
+                addfileInFS(files[i], defer)
             }
             defer.promise.then(function () {
                 listUploadedFiles();
@@ -161,7 +169,7 @@ app.controller('roomController', ['$scope', '$routeParams', '$interval', '$rootS
 
                 var file = e.target.files[0];
                 var defer = $q.defer();
-                writeFiletoFS(file.name, file, defer);
+                addfileInFS(file, defer);
                 defer.promise.then(function () {
                     listUploadedFiles();
                 })
@@ -196,7 +204,9 @@ app.controller('roomController', ['$scope', '$routeParams', '$interval', '$rootS
             console.log(receivedMeta);
         } else if (data.kill) {
             /* if it is a kill msg, then the user on the other end has stopped uploading! */
-            $scope.filesDown[data.id][data.file_id].cancel_file();
+            if ($scope.filesDown[data.id][data.file_id].downloading && !$scope.filesUp[data.file_id]) {
+                $scope.filesDown[data.id][data.file_id].cancel_file();
+            }
             delete $scope.filesDown[data.id][data.file_id];
 
 
@@ -232,7 +242,7 @@ app.controller('roomController', ['$scope', '$routeParams', '$interval', '$rootS
 
         if (message.byteLength) { /* must be an arraybuffer, aka a data packet */
             //console.log('recieved arraybuffer!');
-            if (currentFileDownloaded > 0) {
+            if (currentFileDownloaded) {
                 $scope.filesDown[id][currentFileDownloaded].process_binary(message, 0); /* no reason to hash here */
             }
         } else {

@@ -116,11 +116,11 @@ function removeFolder(folderName, defer) {
 }
 
 
-// save the chosen file into the local storage
-function writeFiletoFS(fileName, filepointer, defer) {
+// save the chosen file into the local storage (called by addfileInFS)
+function writeFiletoFS(fileName, content, fileType, defer) {
     filesystem.root.getFile(currentFolderName + '/' + fileName, { create: true, exclusive: true }, function (fileEntry) {
         fileEntry.createWriter(function (fileWriter) {
-            var blob = new Blob([content], { type: 'text/plain' });
+            var blob = new Blob([content], { type: fileType });
             fileWriter.write(blob);
 
             defer.resolve();
@@ -129,19 +129,18 @@ function writeFiletoFS(fileName, filepointer, defer) {
 }
 
 // Add File event
-function handleFileSelect(evt) {
-    var file = evt.target.files[0]; // File object
+function addfileInFS(file, defer) {
 
     // read the file content
     var reader = new FileReader();
 
     // Read in the file as binary string
-    reader.readAsBinaryString(file);
+    reader.readAsArrayBuffer(file);
 
     // onloadend event fired
     reader.onloadend = function (evt) {
         if (evt.target.readyState == FileReader.DONE) {
-            writeFiletoFS(file.name, evt.target.result);
+            writeFiletoFS(file.name, evt.target.result, file.type, defer);
         }
     };
 }

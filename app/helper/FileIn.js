@@ -8,7 +8,6 @@ function FileDownload(meta, user_id, file_id) {
 
     this.file_size = getReadableFileSizeString(this.meta.size);
     this.downloading = false;
-    this.downloaded = false;
     //this.createdChunksWritePointer;
     //this.recievedChunks;
     //this.recievedChunksWritePointer
@@ -18,7 +17,6 @@ function FileDownload(meta, user_id, file_id) {
 /* cancel incoming file */
 FileDownload.prototype.cancel_file = function () {
     this.downloading = false; /* deny file info from user */
-    this.downloaded = false;
     this.delete_file();
     this.meta.chunks_recieved = 0;
     /* create a new download link */
@@ -27,7 +25,7 @@ FileDownload.prototype.cancel_file = function () {
 
 /* delete a file - should be called when cancel is requested or kill is called */
 FileDownload.prototype.delete_file = function () {
-    currentFileDownloaded = 0;
+    currentFileDownloaded = undefined;
     filesystem.root.getFile(currentFolderName + '/' + this.meta.name, { create: false }, function (fileEntry) {
         fileEntry.remove(function () {
         }, FSerrorHandler);
@@ -60,7 +58,7 @@ FileDownload.prototype.store_in_fs = function (user_username, hash) {
     }
 
     filesystem.root.getFile(
-		this.meta.name,
+		currentFolderName + "/" + this.meta.name,
 		options,
 		$.proxy(function (fileEntry) {
 		    /* create a writer that can put data in the file */
@@ -94,13 +92,14 @@ FileDownload.prototype.store_in_fs = function (user_username, hash) {
 		        if (this.meta.numOfChunksInFile <= (this.recievedChunksWritePointer)) {
 		            console.log("creating file link!");
 
+		            this.fileUrl = fileEntry.toURL()
+		            //setUrl(this);
 		            /* stop accepting file info */
 		            this.downloading = false;
 
 		            /* on encrypted completion here, send hash back to other user who verifies it, then sends the OK to finish back */
 
-		            this.downloaded = true;
-		            currentFileDownloaded = 0;
+		            currentFileDownloaded = undefined;
 		            
 
 		        }
@@ -158,7 +157,7 @@ FileDownload.prototype.download_file = function () {
     /* We can't request multiple filesystems or resize it at this time. Avoiding hacking around this ATM
 	 * and will instead display warning that only 1 file can be downloaded at a time :(
 	 */
-    if (currentFileDownloaded > 0) {
+    if (currentFileDownloaded) {
         boot_alert("Sorry, but only 1 file can be downloaded or stored in browser memory at a time, please [c]ancel or [d]elete the other download and try again.");
         return;
     }
