@@ -2,9 +2,12 @@
   "version": "1.0.0",
   "name": "WebRtcApp",
   "description": "A client webRtc",
+  "main": "index.js",
   "devDependencies": {
 	"http-server": "^0.6.1",
-    "bower": "latest"
+    "bower": "latest",
+	"express": "4.13.3",
+	"ejs": "2.3.3"
   },
   "engines": {
     "node": "4.1.1"
@@ -17,6 +20,6 @@
     "postinstall": "bower install",
 
     
-    "start": "http-server -a 0.0.0.0 -p 8080"
+     "start": "node index.js"
     }
 }
