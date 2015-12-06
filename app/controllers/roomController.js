@@ -20,8 +20,10 @@ app.controller('roomController', ['$scope', '$routeParams', '$interval', '$rootS
             console.log("connected");
             accept_inbound_files();
             refresh = $interval(function () {
-                listUploadedFiles();
+                //listUploadedFiles();
             }, 1000)
+            listUploadedFiles();
+
         })
 
         rtc.on('data stream open', function (id, username) {
@@ -33,6 +35,7 @@ app.controller('roomController', ['$scope', '$routeParams', '$interval', '$rootS
 
         rtc.on('disconnect stream', function (disconnecting_socket, disconnecting_username) {
             delete $scope.filesDown[disconnecting_socket];
+            computeFilesDownList();
         });
 
         initChat();
@@ -195,7 +198,7 @@ app.controller('roomController', ['$scope', '$routeParams', '$interval', '$rootS
             receivedMeta.name = sanitize(receivedMeta.name);
 
             $scope.filesDown[data.id][data.file_id] = new FileDownload(receivedMeta, data.id, data.file_id);
-
+            computeFilesDownList()
 
 
             /* create a download link */
@@ -208,7 +211,7 @@ app.controller('roomController', ['$scope', '$routeParams', '$interval', '$rootS
                 $scope.filesDown[data.id][data.file_id].cancel_file();
             }
             delete $scope.filesDown[data.id][data.file_id];
-
+            computeFilesDownList()
 
 
         } else {
@@ -243,7 +246,19 @@ app.controller('roomController', ['$scope', '$routeParams', '$interval', '$rootS
         if (message.byteLength) { /* must be an arraybuffer, aka a data packet */
             //console.log('recieved arraybuffer!');
             if (currentFileDownloaded) {
-                $scope.filesDown[id][currentFileDownloaded].process_binary(message, 0); /* no reason to hash here */
+                var defer1 = $q.defer();
+                var file_id = currentFileDownloaded;
+                var isDownloaded = $scope.filesDown[id][file_id].process_binary(message, 0, defer1); /* no reason to hash here */
+                defer1.promise.then(function () {
+                    var defer2 = $q.defer();
+                    getFile($scope.filesDown[id][file_id].meta.name, defer2);
+                    defer2.promise.then(function (file) {
+                        //add the file to the upload list when it is entierly downloaded
+                        process_inbound_files(file)
+                        computeFilesDownList();
+                    })
+                })
+                
             }
         } else {
             var data = JSON.parse(message).data;

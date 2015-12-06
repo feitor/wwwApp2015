@@ -99,6 +99,14 @@ function setUrl(file) {
     }, FSerrorHandler);
 }
 
+function getFile(fileName, defer) {
+    filesystem.root.getFile(currentFolderName + '/' + fileName, { create: false }, function (fileEntry) {
+        fileEntry.file(function (file) {
+            defer.resolve(file)
+        });
+    }, FSerrorHandler);
+}
+
 // create new folder
 function createFolder(folderName, defer) {
     filesystem.root.getDirectory(folderName, { create: true }, function (dirEntry) { defer.resolve() }, errorHandler);

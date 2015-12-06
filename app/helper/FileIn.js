@@ -33,7 +33,7 @@ FileDownload.prototype.delete_file = function () {
 }
 
 
-FileDownload.prototype.write_to_file = function (user_username, chunk_data, chunk_num, hash) {
+FileDownload.prototype.write_to_file = function (user_username, chunk_data, chunk_num, hash, defer) {
 
 
 
@@ -42,12 +42,12 @@ FileDownload.prototype.write_to_file = function (user_username, chunk_data, chun
 
     /* once done recieving all chunks for this ack, start writing to memory */
     if (chunk_num % chunksPerACK == (chunksPerACK - 1) || this.meta.numOfChunksInFile == (chunk_num + 1)) {
-        this.store_in_fs(user_username, hash);
+        this.store_in_fs(user_username, hash, defer);
     }
 }
 
 /* only called by write_to_file */
-FileDownload.prototype.store_in_fs = function (user_username, hash) {
+FileDownload.prototype.store_in_fs = function (user_username, hash, defer) {
 
     /* massive thanks to http://stackoverflow.com/questions/10720704/filesystem-api-upload-from-local-drive-to-local-filesystem */
     if (this.createdChunksWritePointer == false) {
@@ -90,8 +90,8 @@ FileDownload.prototype.store_in_fs = function (user_username, hash) {
 
 		        /* EOF condition */
 		        if (this.meta.numOfChunksInFile <= (this.recievedChunksWritePointer)) {
-		            console.log("creating file link!");
-
+		            console.log("file downloaded");
+		            defer.resolve();
 		            this.fileUrl = fileEntry.toURL()
 		            //setUrl(this);
 		            /* stop accepting file info */
@@ -126,28 +126,31 @@ FileDownload.prototype.request_chunk = function (chunk_num, hash) {
 /* inbound - recieve binary data (from a file)
  * we are going to have an expectation that these packets arrive in order (requires reliable datachannel)
  */
-FileDownload.prototype.process_binary = function (message, hash) {
+FileDownload.prototype.process_binary = function (message, hash, defer) {
     if (!this.downloading) {
-        return;
+        return false;
     }
 
     /* We can write to a file using FileSystem! Chrome has native support, FF uses idb.filesystem.js library */
     /* Note that decrypted file packets are passed here by file_decrypt, we don't have to do any decryption here */
 
-    this.write_to_file(rtc.usernames[this.user_id], message, this.meta.chunks_recieved, hash);
+    this.write_to_file(rtc.usernames[this.user_id], message, this.meta.chunks_recieved, hash, defer);
     this.meta.chunks_recieved++;
 
     if (this.meta.numOfChunksInFile <= this.meta.chunks_recieved) {
         console.log("done downloading file!");
         /* stop accepting file info */
         this.downloading = false;
+        return true;
         /* creating the download link is handled by write_to_file */
     }
+    return false;
 }
 
 /* request id's file by sending request for block 0 */
 FileDownload.prototype.download_file = function () {
 
+    console.log("start downloading file")
     /* event listeners or javascript can call us, if id isn't set, must have been an event listener */
     /*if (typeof id == 'object') {
 		var str = id.target.id;
