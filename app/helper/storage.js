@@ -124,6 +124,8 @@ function writeFiletoFS(fileName, content, fileType, defer) {
             fileWriter.write(blob);
 
             defer.resolve();
+            console.log("file written");
+
         }, errorHandler);
     }, errorHandler);
 }
@@ -133,7 +135,7 @@ function addfileInFS(file, defer) {
 
     // read the file content
     var reader = new FileReader();
-
+    console.log("ready to read file");
     // Read in the file as binary string
     reader.readAsArrayBuffer(file);
 

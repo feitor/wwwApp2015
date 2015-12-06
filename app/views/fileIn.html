@@ -2,6 +2,7 @@
 
     {{file.meta.name}}
     <a href="" class="glyphicon glyphicon-download-alt" ng-click="file.download_file()" ng-show="!file.downloading"></a>
+    <i ng-show="file.downloading">{{((file.meta.chunks_recieved - 1) / file.meta.numOfChunksInFile) * 100 | number:0}} % </i>
     <a href="" class="glyphicon glyphicon-remove-circle" ng-click="file.cancel_file()" ng-show="file.downloading"></a>
 
 </span>
