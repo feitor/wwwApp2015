@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+
+<html data-ng-app="AngularWebRTC">
+<head>
+    <meta charset="utf-8" />
+    <title>WebRTC</title>
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="app/css/storage.css" rel="stylesheet" />
+
+</head>
+<body ng-controller="indexController">
+
+    <div class="container">
+        <div id="header">
+            <div class="fileUpload btn btn-primary btn-success fileinput-button pull-right">
+                <i class="glyphicon glyphicon-plus"></i>
+                <span>Add file</span>
+                <input type="file" id="select_file" name="select_file" class="upload" />
+            </div>
+        </div>
+
+        <div class="side">
+            <ul class="folder-list">
+                <li> MY FOLDERS </li>
+                <li ng-repeat="folder in foldersNames"><folder folder-name="folder" ng-click="selectFolder(folder)"  ng-class="{selected:currentFolder==folder}"></folder> <a href="" class="glyphicon glyphicon-remove-circle" ng-click="deleteFolder(folder)"></a></li>
+                <li ng-show="!folderCreation"> <a href="" class="glyphicon glyphicon-plus" ng-click="folderCreation=true">Create Folder... </a> </li>
+                <li ng-show="folderCreation">
+                    <form class="form-inline" role="form" ng-submit="createFolder()">
+                        <span>
+                            <input class="form-control" type="text" placeholder="Folder name" ng-model="newFolderName" />
+                            <input class="form-control" type="submit" value="OK" />
+                        </span>
+                    </form>
+                </li>
+                
+            </ul>
+        </div>
+        <ng-view></ng-view>
+        <div id="fix"></div>
+    </div>
+    <div id="footer"></div>
+
+
+    <!-- 3rd party libraries -->
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+    <script src="bower_components/underscore/underscore-min.js"></script>
+
+    <script src="app/external_lib/jquery.js"></script>
+    <script src="app/external_lib/jquery.browser.min.js"></script>
+
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <script src="app/external_lib/webrtc-data.io.js"></script>
+
+
+    <!-- helpers -->
+    <script src="app/helper/file-io.js"></script>
+    <script src="app/helper/FileOut.js"></script>
+    <script src="app/helper/FileIn.js"></script>
+    <script src="app/helper/storage.js"></script>
+
+    <!-- Load app main script -->
+    <script src="app/app.js"></script>
+    <!-- controllers -->
+    <script src="app/controllers/homeController.js"></script>
+    <script src="app/controllers/roomController.js"></script>
+    <script src="app/controllers/indexController.js"></script>
+
+    <!-- directives -->
+    <script src="app/directives/fileInDirective.js"></script>
+    <script src="app/directives/fileOutDirective.js"></script>
+    <script src="app/directives/folderDirective.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+﻿<!--<div class="panel-heading">Drag files or <input type="file" id="select_file" name="select_file" class="small" /></div>-->
+
+
+
+    <div id="content">
+        <ul class="document-list" id="testul">
+            <!-- uploaded files -->
+            <li ng-repeat="(key, value) in filesUp" >
+                <span>
+                    <file-out file="value"></file-out>
+                    <a href="" class="glyphicon glyphicon-remove-circle" ng-click="upload_stop(key)"></a>
+                </span>
+            </li>
+
+            <!-- available files -->
+
+                <li ng-repeat="(file_id, file) in filesDownList" ng-show="!file.downloaded">
+                    <file-in file="file"></file-in>
+                </li>
+        </ul>
+    </div>
+
+
+
+
+
+
+
+

@@ -1,0 +1,125 @@
+*{
+    padding:           0;
+    margin:            0;
+}
+
+html, body{
+    font-family: "Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,sans-serif;
+    font-size: 15px;
+    height:            100%;
+    color: #3d464d;
+    font-weight: normal;
+}
+
+#layout{
+    min-height:        100%;
+    height:            100%;
+}
+
+#header {
+    box-sizing: border-box;
+    position: relative;
+    top: 0;
+    height: 48px;
+    min-width: 692px;
+    background: #5F5F5F;
+}
+
+#layout, #footer{
+    margin:            0 auto;
+    width:             692px;
+}
+
+#content{
+    margin:           0 0 0 200px;
+    font-size: 20px;
+}
+
+#fix{
+    height:            60px;
+    clear:             both;
+}
+
+.side{
+    width:             200px;
+    float:             left;
+    padding-bottom:    32000px;
+    margin-bottom:    -32000px;
+    border-right: 2px solid #5F5F5F;
+}
+
+
+#footer{
+    height:            60px;
+    margin-top:       -60px;
+}
+
+p{
+    padding:           20px;
+}
+
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+}
+
+.fileUpload input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+
+.glyphicon {
+	padding-right: 2px;
+}
+
+.glyphicon-remove-circle {
+	padding-right: 10px;
+    color : red;
+}
+
+.folder-list {
+    padding: 0;
+    margin: 0;
+}
+
+.folder-list > li {
+    display: block;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 3;
+    box-sizing: border-box;
+    list-style: none;
+    position: relative;
+    padding: 0 8px;
+    height: 32px;
+    color: #777777;
+}
+
+.document-list li {
+		display: block;
+		font-size: 14px;
+		font-weight: normal;
+		position: relative;
+		padding: 20px 20px 20px 20px;
+		border-bottom: 1px solid #ECECEC;
+		height: 60px;
+		overflow: hidden;
+		cursor: default;
+		list-style-type: none;
+} 
+
+.selected {
+    color : #428bca;
+}
+
+folder {
+    cursor :pointer;
+}
