@@ -14,7 +14,7 @@
     "url": "https://github.com/feitor/wwwApp2015.git"
   },
   "scripts": {
-    "postinstall": "bower install",
+    "postinstall": "node_modules/bower/bin/bower install",
 
     
     "start": "http-server -a 0.0.0.0 -p 3000"
