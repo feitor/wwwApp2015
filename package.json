@@ -4,7 +4,7 @@
   "description": "A client webRtc",
   "devDependencies": {
 	"http-server": "^0.6.1",
-    "bower": "^1.3.1"
+    "bower": "latest"
   },
   "engines": {
     "node": "4.1.1"
@@ -14,7 +14,7 @@
     "url": "https://github.com/feitor/wwwApp2015.git"
   },
   "scripts": {
-    "postinstall": "node_modules/bower/bin/bower install",
+    "postinstall": "bower install",
 
     
     "start": "http-server -a 0.0.0.0 -p 3000"
