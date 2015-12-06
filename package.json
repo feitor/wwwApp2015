@@ -17,6 +17,6 @@
     "postinstall": "bower install",
 
     
-    "start": "http-server -a 0.0.0.0 -p 3000"
+    "start": "http-server -a 0.0.0.0 -p 80"
     }
 }
